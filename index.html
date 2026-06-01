@@ -301,8 +301,9 @@ function renderStars() {
 
 function renderConstellation() {
   const svg = document.getElementById('constellation');
+  const nameEl = document.getElementById('constellation-name');
   svg.innerHTML = '';
-  if (STATE.stars.length < 5) return;
+  if (STATE.stars.length < 5) { nameEl.style.opacity = '0'; return; }
   const edges = new Set();
   for (const a of STATE.stars) {
     const sorted = STATE.stars
@@ -328,7 +329,6 @@ function renderConstellation() {
     svg.appendChild(line);
     i++;
   }
-  const nameEl = document.getElementById('constellation-name');
   const name = constellationName(STATE.stars);
   nameEl.textContent = name;
   nameEl.style.opacity = name ? '1' : '0';
