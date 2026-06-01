@@ -91,6 +91,23 @@
       transition: border-color 180ms var(--ease-soft), color 180ms var(--ease-soft);
     }
     .tooltip-resolve:hover { border-color: var(--star-gold-hot); color: var(--star-gold-hot); }
+    @keyframes nova-core {
+      0%   { transform: scale(1);  background: var(--star-white);    box-shadow: 0 0 6px var(--star-white), 0 0 14px var(--star-gold-mid); }
+      30%  { transform: scale(5);  background: var(--star-gold-mid); box-shadow: 0 0 30px var(--star-gold-mid), 0 0 60px var(--star-gold-hot); }
+      65%  { transform: scale(11); background: var(--star-gold-hot); box-shadow: 0 0 80px var(--star-gold-hot), 0 0 140px rgba(255,138,61,0.6); }
+      100% { transform: scale(14); background: var(--star-gold-hot); opacity: 0; }
+    }
+    @keyframes nova-glow {
+      0%   { width: 36px;  height: 36px;  left: -12px; top: -12px; opacity: 1; }
+      60%  { width: 140px; height: 140px; left: -64px; top: -64px; opacity: 0.9; }
+      100% { width: 200px; height: 200px; left: -94px; top: -94px; opacity: 0; }
+    }
+    .star.supernova .star-core {
+      animation: nova-core 1.8s var(--ease-fade) forwards !important;
+    }
+    .star.supernova .star-glow {
+      animation: nova-glow 1.8s var(--ease-fade) forwards !important;
+    }
   </style>
 </head>
 <body>
@@ -245,7 +262,12 @@ function removeStar(id) {
   renderStars();
 }
 
-function triggerSupernova(id) { removeStar(id); } // real animation in S-007
+function triggerSupernova(id) {
+  closeTooltip();
+  const starEl = document.querySelector(`.star[data-id="${id}"]`);
+  if (starEl) starEl.classList.add('supernova');
+  setTimeout(() => removeStar(id), 2000);
+}
 
 document.addEventListener('click', e => {
   if (openTooltip && !openTooltip.contains(e.target)) closeTooltip();

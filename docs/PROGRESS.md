@@ -42,3 +42,8 @@
 - click star → tooltip (text + resolve button), one at a time, click-outside closes
 - escapeHtml sanitizes user text before innerHTML
 - triggerSupernova stub → removeStar for now (real animation S-007)
+
+## S-007a — supernova core
+- nova-core: scale 1→5→11→14, white→gold-mid→gold-hot, opacity 0 at end, 1.8s ease-fade
+- nova-glow: 36px→200px expand, 1.8s ease-fade
+- triggerSupernova adds .supernova class, removes star after 2000ms
