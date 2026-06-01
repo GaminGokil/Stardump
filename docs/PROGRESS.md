@@ -84,3 +84,6 @@
 - placeStar fallback confirmed
 - animatedIds ordering confirmed
 - triggerSupernova → removeStar → saveState chain confirmed
+
+## S-014 — journal
+- JOURNAL.md filled in: what it is, what went well, what broke, AI disclosure, v1.1 wishlist
