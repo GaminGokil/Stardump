@@ -226,6 +226,25 @@ loop();
 
 const STATE = { stars: [], nextId: 0 };
 
+const LS_KEY = 'stardump-v1-sky';
+
+const animatedIds = new Set();
+
+function saveState() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify({ stars: STATE.stars, nextId: STATE.nextId })); } catch (_) {}
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    if (Array.isArray(data.stars)) STATE.stars = data.stars;
+    if (typeof data.nextId === 'number') STATE.nextId = data.nextId;
+    for (const s of STATE.stars) animatedIds.add(s.id);
+  } catch (_) {}
+}
+
 function placeStar() {
   for (let attempt = 0; attempt < 60; attempt++) {
     const x = 70 + Math.random() * (innerWidth - 140);
@@ -242,9 +261,8 @@ function addThoughtStar(text) {
   const pos = placeStar();
   STATE.stars.push({ id: STATE.nextId++, x: pos.x, y: pos.y, text: text.slice(0, 120), createdAt: Date.now() });
   renderStars();
+  saveState();
 }
-
-const animatedIds = new Set();
 
 function renderStars() {
   const container = document.getElementById('stars');
@@ -373,6 +391,7 @@ function closeTooltip() {
 function removeStar(id) {
   STATE.stars = STATE.stars.filter(s => s.id !== id);
   renderStars();
+  saveState();
 }
 
 function triggerSupernova(id) {
@@ -416,6 +435,9 @@ document.getElementById('stars').addEventListener('click', e => {
   starEl.appendChild(tip);
   openTooltip = tip;
 });
+
+loadState();
+renderStars();
   </script>
 </body>
 </html>

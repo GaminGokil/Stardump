@@ -65,3 +65,8 @@
 - #brand fixed top-left: "stardump" uppercase, ui-text-dim
 - #counter fixed top-right: "N stars · the [name]" when stars exist
 - updateCounter() called from renderStars()
+
+## S-011 — persistence
+- LS_KEY = 'stardump-v1-sky', save on every addThoughtStar + removeStar
+- loadState() on page load, pre-populates animatedIds so no fade-in replay on restore
+- initial renderStars() call after loadState() to render persisted stars
