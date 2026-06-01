@@ -15,3 +15,7 @@
 
 ## S-002 — mouse parallax
 - mousemove → exponential smooth (alpha=0.04) → layer offset up to 9px opposite cursor
+
+## S-003 — nebula gradient
+- two CSS pseudo-element radial gradients: warm purple upper-left, cool blue lower-right
+- static, pointer-events:none, z-index:1
