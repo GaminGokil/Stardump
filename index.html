@@ -124,6 +124,13 @@
     #constellation { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
     .c-line { opacity: 0; animation: c-line-in 900ms var(--ease-soft) forwards; }
     @keyframes c-line-in { to { opacity: 1; } }
+    #constellation-name {
+      position: fixed; top: 32px; left: 50%; transform: translateX(-50%);
+      font-family: Georgia, serif; font-style: italic; font-size: 26px;
+      letter-spacing: 3px; color: rgba(255,245,232,0.55);
+      pointer-events: none; z-index: 10;
+      transition: opacity 600ms var(--ease-soft);
+    }
   </style>
 </head>
 <body>
@@ -131,6 +138,7 @@
   <div id="nebula"></div>
   <div id="stars"></div>
   <svg id="constellation" xmlns="http://www.w3.org/2000/svg"></svg>
+  <div id="constellation-name"></div>
   <div id="input-wrap">
     <input id="thought" type="text" maxlength="120" autocomplete="off"
            placeholder="drop a thought into the sky...">
@@ -288,6 +296,41 @@ function renderConstellation() {
     svg.appendChild(line);
     i++;
   }
+  const nameEl = document.getElementById('constellation-name');
+  const name = constellationName(STATE.stars);
+  nameEl.textContent = name;
+  nameEl.style.opacity = name ? '1' : '0';
+}
+
+function constellationName(stars) {
+  if (stars.length < 5) return '';
+  const blob = stars.map(s => s.text.toLowerCase()).join(' ');
+  const TAGS = {
+    school:  /\b(school|class|exam|test|hw|homework|teacher|study|grade|essay|gpa|sat|act|college app)\b/,
+    social:  /\b(friend|friends|group chat|gc|party|text|texted|dms?|snapchat|instagram|crush|left on read|seen|ignored)\b/,
+    sleep:   /\b(sleep|tired|insomnia|2am|3am|cant sleep|can't sleep|awake|nap)\b/,
+    future:  /\b(future|career|college|major|job|life|after|next year|graduation|what if)\b/,
+    romance: /\b(crush|date|dating|love|like.*him|like.*her|relationship|breakup|broke up|ex)\b/,
+    home:    /\b(mom|dad|parent|parents|family|home|sister|brother|sibling|dinner)\b/,
+    body:    /\b(weight|fat|skinny|ugly|skin|acne|hair|body|mirror|gym)\b/,
+    money:   /\b(money|broke|cash|afford|expensive|job|paycheck|bills?)\b/,
+  };
+  const active = new Set(Object.entries(TAGS).filter(([, r]) => r.test(blob)).map(([t]) => t));
+  const has = (...tags) => tags.every(t => active.has(t));
+  if (has('school','social'))  return 'The Eight-Tab Mind';
+  if (has('sleep'))            return 'The Sleepless Cipher';
+  if (has('school','future'))  return 'The Half-Finished Future';
+  if (has('social','romance')) return 'The Unread Heart';
+  if (has('romance'))          return 'The Quiet Pining';
+  if (has('home'))             return 'The Kitchen-Table Worrier';
+  if (has('body'))             return 'The Mirror Watcher';
+  if (has('money'))            return 'The Anxious Ledger';
+  if (has('social'))           return 'The Unread Group Chat';
+  if (has('school'))           return 'The Restless Scholar';
+  if (has('future'))           return 'The Open Loop';
+  const pool = ['Caffeinated Spiral','Soft Static','2AM Drift','Tangled Constellation','Quiet Worrier','Burnt-Out Wanderer','Anxious Cartographer','Procrastinator','Sunday Scaries'];
+  const idx = stars.reduce((acc, s) => acc + s.text.length * (s.id + 1), 0) % pool.length;
+  return pool[idx];
 }
 
 document.getElementById('thought').addEventListener('keydown', e => {

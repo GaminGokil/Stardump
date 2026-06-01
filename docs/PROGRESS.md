@@ -56,3 +56,7 @@
 - SVG overlay z-index:2 pointer-events:none
 - nearest-2-neighbor per star, deduplicated edges via sorted id key
 - c-line fade-in 900ms ease-soft with 70ms stagger
+
+## S-009 — constellation name
+- keyword regex (8 tags) → named combinations, fallback pool (9 names) keyed by sum(text.length*(id+1))
+- #constellation-name: italic Georgia 26px, 3px letter-spacing, fades in/out
