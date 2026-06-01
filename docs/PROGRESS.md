@@ -51,3 +51,8 @@
 ## S-007b — supernova particles
 - 16 radial .nova-particle spans with CSS custom props --tx/--ty
 - nova-particle: translate 0→(tx,ty), opacity 0→1→0, 1.6s ease-fade
+
+## S-008a — constellation lines
+- SVG overlay z-index:2 pointer-events:none
+- nearest-2-neighbor per star, deduplicated edges via sorted id key
+- c-line fade-in 900ms ease-soft with 70ms stagger
