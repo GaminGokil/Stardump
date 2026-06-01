@@ -19,3 +19,7 @@
 ## S-003 — nebula gradient
 - two CSS pseudo-element radial gradients: warm purple upper-left, cool blue lower-right
 - static, pointer-events:none, z-index:1
+
+## S-004 — input bar
+- fixed bottom-center, 520px max 80vw, pill border, ease-soft focus transition
+- Enter → addThoughtStar stub + clear; STATE object initialized

@@ -35,11 +35,29 @@
     #nebula::after {
       background: radial-gradient(closest-side at 78% 78%, rgba(60,110,220,0.18), transparent 72%);
     }
+    #input-wrap {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); z-index: 10;
+    }
+    #thought {
+      width: 520px; max-width: 80vw;
+      background: transparent; color: var(--star-white);
+      font-size: 16px; font-family: system-ui, sans-serif;
+      padding: 12px 18px;
+      border: 1px solid rgba(255,245,232,0.14); border-radius: 999px;
+      outline: none;
+      transition: border 220ms var(--ease-soft);
+    }
+    #thought:focus { border-color: rgba(255,245,232,0.35); }
+    #thought::placeholder { color: var(--ui-text-dim); }
   </style>
 </head>
 <body>
   <canvas id="sky" style="position:fixed;inset:0;z-index:1;"></canvas>
   <div id="nebula"></div>
+  <div id="input-wrap">
+    <input id="thought" type="text" maxlength="120" autocomplete="off"
+           placeholder="drop a thought into the sky...">
+  </div>
   <script>
 const canvas = document.getElementById('sky');
 const ctx = canvas.getContext('2d');
@@ -108,6 +126,16 @@ function loop() {
 }
 
 loop();
+
+const STATE = { stars: [], nextId: 0 };
+
+function addThoughtStar(text) { /* implemented in S-005 */ }
+
+document.getElementById('thought').addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const text = e.target.value.trim();
+  if (text) { addThoughtStar(text); e.target.value = ''; }
+});
   </script>
 </body>
 </html>
