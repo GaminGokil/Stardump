@@ -177,7 +177,7 @@ function genStars() {
     bgStars.push({
       x: Math.random() * innerWidth,
       y: Math.random() * innerHeight,
-      r: 0.2 + Math.random() * 0.9,
+      r: 0.4 + Math.random() * 1.3,
       layer,
       hue,
       baseAlpha: 0.35 + Math.random() * 0.60,
@@ -217,7 +217,7 @@ function loop() {
     ctx.globalAlpha = alpha;
     ctx.fillStyle = s.hue;
     ctx.beginPath();
-    ctx.arc(s.x - dx * s.layer * 4.5, s.y - dy * s.layer * 4.5, s.r, 0, Math.PI * 2);
+    ctx.arc(s.x - dx * (s.layer + 1) * 12, s.y - dy * (s.layer + 1) * 12, s.r, 0, Math.PI * 2);
     ctx.fill();
   }
   ctx.globalAlpha = 1;
