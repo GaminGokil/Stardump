@@ -27,3 +27,8 @@
 ## S-005a — placement algorithm
 - placeStar(): 60-attempt min-distance (90px) constraint, falls back to unconstrained
 - addThoughtStar() pushes to STATE.stars, calls renderStars()
+
+## S-005b — star DOM rendering
+- #stars container fixed inset z-index:3
+- renderStars() diffs existing DOM nodes, positions via left/top
+- .star-core warm-gold box-shadow glow, .star-glow radial gradient ring

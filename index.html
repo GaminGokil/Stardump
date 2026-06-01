@@ -49,11 +49,25 @@
     }
     #thought:focus { border-color: rgba(255,245,232,0.35); }
     #thought::placeholder { color: var(--ui-text-dim); }
+    #stars { position: fixed; inset: 0; z-index: 3; pointer-events: none; }
+    .star { position: absolute; width: 12px; height: 12px; margin-left: -6px; margin-top: -6px; cursor: pointer; pointer-events: auto; }
+    .star-core {
+      position: absolute; left: 4px; top: 4px; width: 4px; height: 4px;
+      border-radius: 50%; background: var(--star-white);
+      box-shadow: 0 0 6px var(--star-white), 0 0 14px var(--star-gold-mid), 0 0 26px var(--star-gold-hot);
+    }
+    .star-glow {
+      position: absolute; left: -12px; top: -12px; width: 36px; height: 36px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,200,128,0.45), transparent 70%);
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
   <canvas id="sky" style="position:fixed;inset:0;z-index:1;"></canvas>
   <div id="nebula"></div>
+  <div id="stars"></div>
   <div id="input-wrap">
     <input id="thought" type="text" maxlength="120" autocomplete="off"
            placeholder="drop a thought into the sky...">
@@ -147,7 +161,31 @@ function addThoughtStar(text) {
   renderStars();
 }
 
-function renderStars() { /* implemented in S-005b */ }
+const animatedIds = new Set();
+
+function renderStars() {
+  const container = document.getElementById('stars');
+  const existing = new Map();
+  for (const el of container.children) existing.set(+el.dataset.id, el);
+
+  for (const s of STATE.stars) {
+    if (!existing.has(s.id)) {
+      const el = document.createElement('div');
+      el.className = 'star';
+      el.dataset.id = s.id;
+      el.style.left = s.x + 'px';
+      el.style.top = s.y + 'px';
+      el.innerHTML = '<div class="star-glow"></div><div class="star-core"></div>';
+      container.appendChild(el);
+      existing.set(s.id, el);
+    }
+  }
+
+  const activeIds = new Set(STATE.stars.map(s => s.id));
+  for (const [id, el] of existing) {
+    if (!activeIds.has(id)) el.remove();
+  }
+}
 
 document.getElementById('thought').addEventListener('keydown', e => {
   if (e.key !== 'Enter') return;
