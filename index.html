@@ -131,9 +131,21 @@
       pointer-events: none; z-index: 10;
       transition: opacity 600ms var(--ease-soft);
     }
+    #brand {
+      position: fixed; top: 24px; left: 28px; z-index: 10;
+      font-size: 14px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--ui-text-dim); pointer-events: none;
+    }
+    #counter {
+      position: fixed; top: 24px; right: 28px; z-index: 10;
+      font-size: 13px; letter-spacing: 1px; text-transform: uppercase;
+      color: var(--ui-text-dim); pointer-events: none;
+    }
   </style>
 </head>
 <body>
+  <div id="brand">stardump</div>
+  <div id="counter"></div>
   <canvas id="sky" style="position:fixed;inset:0;z-index:1;"></canvas>
   <div id="nebula"></div>
   <div id="stars"></div>
@@ -265,6 +277,7 @@ function renderStars() {
     if (!activeIds.has(id)) el.remove();
   }
   renderConstellation();
+  updateCounter();
 }
 
 function renderConstellation() {
@@ -331,6 +344,14 @@ function constellationName(stars) {
   const pool = ['Caffeinated Spiral','Soft Static','2AM Drift','Tangled Constellation','Quiet Worrier','Burnt-Out Wanderer','Anxious Cartographer','Procrastinator','Sunday Scaries'];
   const idx = stars.reduce((acc, s) => acc + s.text.length * (s.id + 1), 0) % pool.length;
   return pool[idx];
+}
+
+function updateCounter() {
+  const el = document.getElementById('counter');
+  const n = STATE.stars.length;
+  if (n === 0) { el.textContent = ''; return; }
+  const name = constellationName(STATE.stars);
+  el.textContent = name ? `${n} stars · the ${name}` : `${n} stars`;
 }
 
 document.getElementById('thought').addEventListener('keydown', e => {

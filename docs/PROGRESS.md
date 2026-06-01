@@ -60,3 +60,8 @@
 ## S-009 — constellation name
 - keyword regex (8 tags) → named combinations, fallback pool (9 names) keyed by sum(text.length*(id+1))
 - #constellation-name: italic Georgia 26px, 3px letter-spacing, fades in/out
+
+## S-010 — counter + brand
+- #brand fixed top-left: "stardump" uppercase, ui-text-dim
+- #counter fixed top-right: "N stars · the [name]" when stars exist
+- updateCounter() called from renderStars()
