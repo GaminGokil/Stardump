@@ -47,3 +47,7 @@
 - nova-core: scale 1→5→11→14, white→gold-mid→gold-hot, opacity 0 at end, 1.8s ease-fade
 - nova-glow: 36px→200px expand, 1.8s ease-fade
 - triggerSupernova adds .supernova class, removes star after 2000ms
+
+## S-007b — supernova particles
+- 16 radial .nova-particle spans with CSS custom props --tx/--ty
+- nova-particle: translate 0→(tx,ty), opacity 0→1→0, 1.6s ease-fade

@@ -108,6 +108,19 @@
     .star.supernova .star-glow {
       animation: nova-glow 1.8s var(--ease-fade) forwards !important;
     }
+    .nova-particle {
+      position: absolute; left: 6px; top: 6px; width: 3px; height: 3px; margin: -1.5px 0 0 -1.5px;
+      border-radius: 50%; background: var(--star-gold-mid);
+      box-shadow: 0 0 6px var(--star-gold-hot); opacity: 0;
+    }
+    .star.supernova .nova-particle {
+      animation: nova-particle 1.6s var(--ease-fade) forwards;
+    }
+    @keyframes nova-particle {
+      0%   { transform: translate(0,0) scale(0.4); opacity: 0; }
+      20%  { opacity: 1; }
+      100% { transform: translate(var(--tx), var(--ty)) scale(0.6); opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -265,7 +278,18 @@ function removeStar(id) {
 function triggerSupernova(id) {
   closeTooltip();
   const starEl = document.querySelector(`.star[data-id="${id}"]`);
-  if (starEl) starEl.classList.add('supernova');
+  if (starEl) {
+    for (let i = 0; i < 16; i++) {
+      const angle = (i / 16) * Math.PI * 2 + (Math.random() * 0.15);
+      const dist = 90 + Math.random() * 60;
+      const p = document.createElement('span');
+      p.className = 'nova-particle';
+      p.style.setProperty('--tx', `${Math.cos(angle) * dist}px`);
+      p.style.setProperty('--ty', `${Math.sin(angle) * dist}px`);
+      starEl.appendChild(p);
+    }
+    starEl.classList.add('supernova');
+  }
   setTimeout(() => removeStar(id), 2000);
 }
 
