@@ -32,3 +32,8 @@
 - #stars container fixed inset z-index:3
 - renderStars() diffs existing DOM nodes, positions via left/top
 - .star-core warm-gold box-shadow glow, .star-glow radial gradient ring
+
+## S-006a — fade-in + pulse animations
+- star-in: 0→scale(0.6) → scale(1.12) → scale(1), 1.5s ease-pop, runs once
+- star-pulse: opacity 1→0.78→1, 3.4–5.6s ease-soft, infinite, random phase offset
+- animatedIds Set prevents fade-in replay on re-render

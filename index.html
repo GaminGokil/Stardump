@@ -62,6 +62,16 @@
       background: radial-gradient(circle, rgba(255,200,128,0.45), transparent 70%);
       pointer-events: none;
     }
+    @keyframes star-in {
+      0%   { opacity: 0; transform: scale(0.6); }
+      70%  { opacity: 1; transform: scale(1.12); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    @keyframes star-pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.78; }
+    }
+    .star:hover .star-glow { transform: scale(1.4); transition: transform 280ms var(--ease-soft); }
   </style>
 </head>
 <body>
@@ -177,6 +187,14 @@ function renderStars() {
       el.style.top = s.y + 'px';
       el.innerHTML = '<div class="star-glow"></div><div class="star-core"></div>';
       container.appendChild(el);
+      const dur = (3.4 + Math.random() * 2.2).toFixed(2);
+      const delay = (-Math.random() * 5).toFixed(2);
+      if (!animatedIds.has(s.id)) {
+        el.style.animation = `star-in 1.5s var(--ease-pop) both, star-pulse ${dur}s var(--ease-soft) ${delay}s infinite`;
+        animatedIds.add(s.id);
+      } else {
+        el.style.animation = `star-pulse ${dur}s var(--ease-soft) ${delay}s infinite`;
+      }
       existing.set(s.id, el);
     }
   }
