@@ -76,3 +76,11 @@
 - star-glow opacity: 0.45 → 0.55
 - #constellation-name: opacity:0 initial state
 - easing audit passed: all transitions use ease tokens
+
+## S-013a — edge case verification
+- maxlength=120 confirmed on input
+- tooltip -webkit-line-clamp:2 confirmed
+- text.slice(0,120) in addThoughtStar confirmed
+- placeStar fallback confirmed
+- animatedIds ordering confirmed
+- triggerSupernova → removeStar → saveState chain confirmed
