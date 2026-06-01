@@ -1,0 +1,24 @@
+{
+  "hooks": {
+    "WorktreeCreate": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "git worktree add \"$WORKTREE_DIR\" -b \"$BRANCH_NAME\""
+          }
+        ]
+      }
+    ],
+    "WorktreeRemove": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "git worktree remove \"$WORKTREE_DIR\" --force"
+          }
+        ]
+      }
+    ]
+  }
+}
