@@ -37,3 +37,8 @@
 - star-in: 0→scale(0.6) → scale(1.12) → scale(1), 1.5s ease-pop, runs once
 - star-pulse: opacity 1→0.78→1, 3.4–5.6s ease-soft, infinite, random phase offset
 - animatedIds Set prevents fade-in replay on re-render
+
+## S-006b — tooltip + resolve
+- click star → tooltip (text + resolve button), one at a time, click-outside closes
+- escapeHtml sanitizes user text before innerHTML
+- triggerSupernova stub → removeStar for now (real animation S-007)

@@ -72,6 +72,25 @@
       50%       { opacity: 0.78; }
     }
     .star:hover .star-glow { transform: scale(1.4); transition: transform 280ms var(--ease-soft); }
+    .tooltip {
+      position: absolute; top: -8px; left: 20px; transform: translateY(-100%);
+      min-width: 180px; max-width: 280px;
+      background: rgba(10,12,28,0.88); backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,245,232,0.10); border-radius: 10px;
+      padding: 10px 12px; color: var(--star-white); font-size: 13px;
+      z-index: 20; pointer-events: auto;
+    }
+    .tooltip-text {
+      margin: 0 0 8px; line-height: 1.4;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .tooltip-resolve {
+      background: transparent; border: 1px solid rgba(255,200,128,0.4);
+      color: var(--star-gold-mid); padding: 4px 10px; border-radius: 999px;
+      cursor: pointer; font-size: 12px; font-family: system-ui, sans-serif;
+      transition: border-color 180ms var(--ease-soft), color 180ms var(--ease-soft);
+    }
+    .tooltip-resolve:hover { border-color: var(--star-gold-hot); color: var(--star-gold-hot); }
   </style>
 </head>
 <body>
@@ -209,6 +228,47 @@ document.getElementById('thought').addEventListener('keydown', e => {
   if (e.key !== 'Enter') return;
   const text = e.target.value.trim();
   if (text) { addThoughtStar(text); e.target.value = ''; }
+});
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}
+
+let openTooltip = null;
+
+function closeTooltip() {
+  if (openTooltip) { openTooltip.remove(); openTooltip = null; }
+}
+
+function removeStar(id) {
+  STATE.stars = STATE.stars.filter(s => s.id !== id);
+  renderStars();
+}
+
+function triggerSupernova(id) { removeStar(id); } // real animation in S-007
+
+document.addEventListener('click', e => {
+  if (openTooltip && !openTooltip.contains(e.target)) closeTooltip();
+});
+
+document.getElementById('stars').addEventListener('click', e => {
+  const starEl = e.target.closest('.star');
+  if (!starEl) return;
+  e.stopPropagation();
+  closeTooltip();
+  const id = +starEl.dataset.id;
+  const star = STATE.stars.find(s => s.id === id);
+  if (!star) return;
+  const tip = document.createElement('div');
+  tip.className = 'tooltip';
+  tip.innerHTML = `<p class="tooltip-text">${escapeHtml(star.text)}</p><button class="tooltip-resolve">mark as resolved ✦</button>`;
+  tip.querySelector('.tooltip-resolve').addEventListener('click', ev => {
+    ev.stopPropagation();
+    closeTooltip();
+    triggerSupernova(id);
+  });
+  starEl.appendChild(tip);
+  openTooltip = tip;
 });
   </script>
 </body>
