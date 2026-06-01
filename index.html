@@ -370,7 +370,7 @@ function updateCounter() {
   const n = STATE.stars.length;
   if (n === 0) { el.textContent = ''; return; }
   const name = constellationName(STATE.stars);
-  el.textContent = name ? `${n} stars · the ${name}` : `${n} stars`;
+  el.textContent = name ? `${n} stars · ${name}` : `${n} stars`;
 }
 
 document.getElementById('thought').addEventListener('keydown', e => {

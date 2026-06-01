@@ -87,3 +87,9 @@
 
 ## S-014 — journal
 - JOURNAL.md filled in: what it is, what went well, what broke, AI disclosure, v1.1 wishlist
+
+## S-013b — cross-browser smoke
+- Chrome 1920×1080: zero console errors, star field + nebulae render, constellation lines stagger in, supernova fires and star is removed, counter updates, persistence confirmed (reload restores stars)
+- Chrome 1440×900: identical result, layout scales correctly, no overflow
+- Bug found and fixed: counter template used `the ${name}` but constellation names already include "The" prefix → changed to `${name}` to eliminate double-the
+- No Safari-specific fixes needed for Chrome smoke pass; mix-blend-mode renders correctly in Chrome
