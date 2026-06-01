@@ -70,3 +70,9 @@
 - LS_KEY = 'stardump-v1-sky', save on every addThoughtStar + removeStar
 - loadState() on page load, pre-populates animatedIds so no fade-in replay on restore
 - initial renderStars() call after loadState() to render persisted stars
+
+## S-012 — polish pass
+- star-core box-shadow: deeper (8/18/32px)
+- star-glow opacity: 0.45 → 0.55
+- #constellation-name: opacity:0 initial state
+- easing audit passed: all transitions use ease tokens
