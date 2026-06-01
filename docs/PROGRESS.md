@@ -12,3 +12,6 @@
 
 ## S-001c — twinkle loop
 - rAF loop, alpha = baseAlpha*(0.7+0.3*sin(t*freq+phase)), no per-frame allocations
+
+## S-002 — mouse parallax
+- mousemove → exponential smooth (alpha=0.04) → layer offset up to 9px opposite cursor

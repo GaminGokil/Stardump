@@ -69,10 +69,16 @@ function resize() {
 
 resize();
 window.addEventListener('resize', resize);
+window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
 
 function loop() {
   requestAnimationFrame(loop);
   const t = performance.now() / 1000;
+
+  smooth.x += (mouse.x - smooth.x) * 0.04;
+  smooth.y += (mouse.y - smooth.y) * 0.04;
+  const dx = (smooth.x - innerWidth / 2) / (innerWidth / 2);
+  const dy = (smooth.y - innerHeight / 2) / (innerHeight / 2);
 
   ctx.clearRect(0, 0, innerWidth, innerHeight);
 
@@ -81,7 +87,7 @@ function loop() {
     ctx.globalAlpha = alpha;
     ctx.fillStyle = s.hue;
     ctx.beginPath();
-    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.arc(s.x - dx * s.layer * 4.5, s.y - dy * s.layer * 4.5, s.r, 0, Math.PI * 2);
     ctx.fill();
   }
   ctx.globalAlpha = 1;
