@@ -23,3 +23,7 @@
 ## S-004 — input bar
 - fixed bottom-center, 520px max 80vw, pill border, ease-soft focus transition
 - Enter → addThoughtStar stub + clear; STATE object initialized
+
+## S-005a — placement algorithm
+- placeStar(): 60-attempt min-distance (90px) constraint, falls back to unconstrained
+- addThoughtStar() pushes to STATE.stars, calls renderStars()

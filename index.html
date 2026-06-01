@@ -129,7 +129,25 @@ loop();
 
 const STATE = { stars: [], nextId: 0 };
 
-function addThoughtStar(text) { /* implemented in S-005 */ }
+function placeStar() {
+  for (let attempt = 0; attempt < 60; attempt++) {
+    const x = 70 + Math.random() * (innerWidth - 140);
+    const y = 70 + Math.random() * (innerHeight - 150);
+    if (STATE.stars.every(s => Math.hypot(s.x - x, s.y - y) >= 90)) return { x, y };
+  }
+  return {
+    x: 70 + Math.random() * (innerWidth - 140),
+    y: 70 + Math.random() * (innerHeight - 150),
+  };
+}
+
+function addThoughtStar(text) {
+  const pos = placeStar();
+  STATE.stars.push({ id: STATE.nextId++, x: pos.x, y: pos.y, text: text.slice(0, 120), createdAt: Date.now() });
+  renderStars();
+}
+
+function renderStars() { /* implemented in S-005b */ }
 
 document.getElementById('thought').addEventListener('keydown', e => {
   if (e.key !== 'Enter') return;
