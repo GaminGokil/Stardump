@@ -69,6 +69,25 @@ function resize() {
 
 resize();
 window.addEventListener('resize', resize);
+
+function loop() {
+  requestAnimationFrame(loop);
+  const t = performance.now() / 1000;
+
+  ctx.clearRect(0, 0, innerWidth, innerHeight);
+
+  for (const s of bgStars) {
+    const alpha = clamp(s.baseAlpha * (0.7 + 0.3 * Math.sin(t * s.freq + s.phase)), 0, 1);
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = s.hue;
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+
+loop();
   </script>
 </body>
 </html>
