@@ -144,6 +144,27 @@
     }
     body { cursor: grab; }
     body.panning { cursor: grabbing; }
+    #welcome {
+      position: fixed; inset: 0; z-index: 30;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(2, 3, 10, 0.62);
+      opacity: 0; pointer-events: none;
+      transition: opacity 600ms var(--ease-soft);
+    }
+    #welcome.show { opacity: 1; pointer-events: auto; }
+    #welcome-inner { max-width: 440px; padding: 0 24px; text-align: center; }
+    #welcome-title {
+      margin: 0 0 18px; font-weight: 400;
+      font-size: 28px letter-spacing: 6px; color: var(--star-white);
+    }
+    #welcome-inner p {margin: 0 0 12px; font-size: 15px; line-height: 1.6; color: var(--ui-text); }
+    #welcome-begin {
+      display: inline-clock; margin-top: 18px;
+      font-size: 15px; letter-spacing: 2px; cursor: pointer;
+      color: var(--ui-text-dim);
+      transition: color 220ms var(--ease-soft);
+    }
+    #welcome-begin:hover { color: var(--star-gold-mid); }
   </style>
 </head>
 <body>
@@ -157,6 +178,15 @@
   <div id="input-wrap">
     <input id="thought" type="text" maxlength="120" autocomplete="off"
            placeholder="drop a thought into the sky...">
+  </div>
+  <div id="welcome">
+    <div id="welcome-inner">
+      <h1 id="welcome-title">stardump</h1>
+      <p>a place to set your worries down.</p>
+      <p>type a thought - it becomes a star. five make a constellation that's yours.</p>
+      <p>wehn a worry passes, let its star go supernova.</p>
+      <span id="welcome-begin">begin ✦<</span>
+    </div>
   </div>
   <script>
 const canvas = document.getElementById('sky');
@@ -478,6 +508,23 @@ function closeTooltip() {
   if (openTooltip) { openTooltip.remove(); openTooltip = null; }
 }
 
+function dismissWelcome() {
+  const w = document.getElementById('welcome');
+  if (!w) return;
+  w.classList.remove('show');
+  STATE.seenWelcome = true;
+  saveState();
+  setTimeout(() => w.remove(), 600);
+}
+
+function maybeShowWelcome() {
+  const w = document.getElementById('welcome');
+  if (!w) return;
+  if (STATE.seenWelcome || STATE.stars.length > 0) { w.remove(); return; }
+  document.getElementById('welcome-begin').addEventListener('click', dismissWelcome);
+  setTimeout(() => w.classList.add('show'), 350);
+}
+
 function s2wx(sx) { return sx / view.scale + view.ox; }
 function s2wy(sy) { return sy / view.scale + view.oy; }
 
@@ -575,6 +622,7 @@ document.getElementById('stars').addEventListener('click', e => {
 loadState();
 renderStars();
 applyView();
+maybeShowWelcome();
   </script>
 </body>
 </html>
