@@ -158,3 +158,23 @@
 - Fix: hoist `moved = false` above the star/input/tooltip early-return so the flag tracks the current press cycle
 - Verified @ 1920×1080: pan → click star opens tooltip; a pure pan opens no tooltip; clean clicks unaffected; zero console errors
 - Audit also reviewed (no change needed): `applyView` transform math correct; tooltip counter-scale correct; `placeStar` at zoom acceptable. Background-not-coupled-to-zoom and view-not-persisted are expected — they are the next planned steps (S-023, S-025)
+
+## S-023 — feat(sky): couple background to zoom
+- `bgScale() = 1 + (view.scale - 1) * 0.5` — background follows zoom at half the foreground rate
+- `bs`, tile period `TW = tileW*bs` / `TH = tileH*bs` hoisted once per frame (independent of star)
+- Per-star radius `r = s.r*bs`; wrap math and off-viewport cull operate in scaled space
+- Zoom now reads cohesive front-to-back instead of foreground sliding over a static field
+- Verified @ 1920×1080: bgScale 0.4→0.7, 1→1, 3→2; 60fps / 0 long frames at both zoom extremes; bg stars visibly grow with zoom; no triangles; zero console errors
+
+## S-024 — feat(sky): double-click recenter glide
+- `easeK(k)` cubic in/out (not linear) drives a 600ms `glideTo(tx,ty,ts)` that lerps `ox/oy/scale` via rAF, `saveState()` on arrival
+- `recenter()` targets the centroid of `STATE.stars` at scale 1 (origin when empty): `tx = cx - (innerWidth/ts)/2`
+- `dblclick` listener ignores `.star, #input-wrap, .tooltip`; recenters otherwise
+- Verified @ 1920×1080: from ox/oy 4000+ @ scale 2.5, double-click empty space glides smoothly (eased ~600ms) and lands exactly on the centroid at scale 1; double-clicking a star does not recenter; zero console errors
+
+## S-025 — feat(persist): save camera + migrate
+- `saveState()` now persists `view: { ox, oy, scale }` alongside stars/nextId
+- `loadState()` restores it behind an `if (data.view)` guard → legacy saves (no view key) load at identity
+- Sanitized: `ox/oy` via `+x || 0`, `scale` via `clamp(+scale || 1, 0.4, 3)` (matches wheel-zoom clamp)
+- Init order `loadState() → renderStars() → applyView()` already applies the restored camera
+- Verified @ 1920×1080 (V4): set ox/oy/scale → reload restores camera + stars exactly (incl. `#stars` transform); legacy save (no view) → identity, stars intact; corrupt view (ox NaN, scale 99) → sanitized to 0/0 and clamp 3; zero console errors

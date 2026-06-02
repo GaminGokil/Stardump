@@ -303,7 +303,7 @@ const LS_KEY = 'stardump-v1-sky';
 const animatedIds = new Set();
 
 function saveState() {
-  try { localStorage.setItem(LS_KEY, JSON.stringify({ stars: STATE.stars, nextId: STATE.nextId })); } catch (_) {}
+  try { localStorage.setItem(LS_KEY, JSON.stringify({ stars: STATE.stars, nextId: STATE.nextId, view: { ox: view.ox, oy: view.oy, scale: view.scale } })); } catch (_) {}
 }
 
 function loadState() {
@@ -313,6 +313,11 @@ function loadState() {
     const data = JSON.parse(raw);
     if (Array.isArray(data.stars)) STATE.stars = data.stars;
     if (typeof data.nextId === 'number') STATE.nextId = data.nextId;
+    if (data.view) {
+      view.ox = +data.view.ox || 0;
+      view.oy = +data.view.oy || 0;
+      view.scale = clamp(+data.view.scale || 1, 0.4, 3);
+    }
     for (const s of STATE.stars) animatedIds.add(s.id);
   } catch (_) {}
 }
