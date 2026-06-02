@@ -298,14 +298,19 @@ function loadState() {
 }
 
 function placeStar() {
+  const M = 70;
+  const wx0 = view.ox + M / view.scale;
+  const wx1 = view.ox + (innerWidth - M) / view.scale;
+  const wy0 = view.oy + M / view.scale;
+  const wy1 = view.oy + (innerHeight - M - 80) / view.scale;
   for (let attempt = 0; attempt < 60; attempt++) {
-    const x = 70 + Math.random() * (innerWidth - 140);
-    const y = 70 + Math.random() * (innerHeight - 150);
+    const x = wx0 + Math.random() * (wx1 - wx0);
+    const y = wy0 + Math.random() * (wy1 - wy0);
     if (STATE.stars.every(s => Math.hypot(s.x - x, s.y - y) >= 90)) return { x, y };
   }
   return {
-    x: 70 + Math.random() * (innerWidth - 140),
-    y: 70 + Math.random() * (innerHeight - 150),
+    x: wx0 + Math.random() * (wx1 - wx0),
+    y: wy0 + Math.random() * (wy1 - wy0),
   };
 }
 

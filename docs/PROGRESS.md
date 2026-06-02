@@ -118,3 +118,21 @@
 - Cursor: `grab` idle → `grabbing` while panning
 - Click handler guard: `if(moved) return;` suppresses tooltip after drag
 - Foreground (stars+constellation) pans smoothly; background (S-020) pending
+
+## S-020 — feat(sky): infinite wrapped background
+- `genStars()` now generates stars across 2× viewport tile: `tileW = innerWidth*2, tileH = innerHeight*2`
+- Star count scales with tile area: `clamp(tileW*tileH/2800, 200, 900)` (was 100–300 fixed)
+- `LAYER_P = [0.30, 0.55, 0.80]` — parallax factors per layer (far→near); offsets = `view.ox*p`
+- `loop()` computes wrapped base coords: `((s.x - offX) % tileW + tileW) % tileW` for continuous tiling
+- Tiling loop draws star copies across viewport + margin (`gx/gy ±tileW/tileH`), one path per star
+- Panning now reveals an endless starfield; layers drift at different rates for depth
+- Fixed initialization order: moved `const view = {...}` before `loop()` call to avoid ReferenceError
+
+## S-021 — feat(stars): place new thoughts in current view
+- `placeStar()` now computes viewport bounds in world space: `wx0/wx1` (horizontal), `wy0/wy1` (vertical)
+- Bounds account for camera offset and scale: `wx0 = view.ox + M/view.scale` (left edge)
+- Vertical margin includes 80px for input bar: `wy1 = view.oy + (innerHeight - M - 80)/view.scale`
+- Sampling: `x = wx0 + Math.random()*(wx1-wx0)` yields world coords in current view
+- Min-distance constraint (90 units) unchanged; applies in world space as before
+- Fallback return also uses viewport rectangle, ensuring consistent placement
+- New thoughts now land on-screen when added, even after panning/zooming away
