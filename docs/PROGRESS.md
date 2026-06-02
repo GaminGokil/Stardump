@@ -187,3 +187,13 @@
 - Performance @ 1920×1080: combined pan+zoom 60.6fps, 0 long frames. Tooltip readability: counter-scale holds the tooltip at an identical 180×74px / 13px font at scale 1, 0.4 and 3
 - Cross-size smoke: 1920×1080 and 1440×900 both clean — canvas matches viewport, full pan→zoom→tooltip→recenter chain works, layout correct, zero console errors. Safari not testable on Windows (deferred per "Safari if available")
 - Note for follow-up (not S-026): repo has accumulated test-artifact PNGs + `.playwright-mcp/` / `.worktrees/` untracked, and `/docs` in `.gitignore` forces `git add -f` for this log — candidates for a `.gitignore` cleanup
+
+
+## S-028 - polish(stars): inline SVG star icons
+- PLAN.md: added an "Icons exception" to the hard constraints - inline `<svg>` icons (drawn in-file, themed via `fill: currentColor`) are allowed (no request, no package); icon fonts / external sprites / CDN/`<link>`/`<script>` sources still banned; decorative icons get `aria-hidden="true"` and reuse a shared `.icon-star` class
+- New `.icon-star` CSS: `width/height: 1em`, `vertical-align: -0.12em`, `fill: currentColor`, filter transition - scales with text and inherits color
+- Replaced both unicode `<glyph>` star glyphs with the same inline 8-point-star `<svg>` path: welcome "begin" and the tooltip "mark as resolved" button
+- Fixed three prior welcome-CSS bugs surfaced in the same block: `display: inline-clock` -> `inline-flex` (+ align-items/gap), missing `;` after `font-size: 28px`, stray `<` left after the old begin glyph
+- welcome-begin restyled: idle gold-mid -> hover gold-hot with text-shadow + icon drop-shadow glow (eased)
+- Copy fix (same overlay): "wehn a worry passes" -> "when a worry passes"
+- Verified @ 1920x1080: welcome renders gold "begin" + crisp SVG star (display inline-flex confirmed, icon fill resolves to gold via currentColor at 1em); clicking a star opens the tooltip with the SVG resolve icon; no unicode star glyph anywhere in the DOM; zero console messages on load and after both interactions; saved sky/state restored exactly after the first-run test. Verify: V1,V2,V5

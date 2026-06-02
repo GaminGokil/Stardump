@@ -155,16 +155,24 @@
     #welcome-inner { max-width: 440px; padding: 0 24px; text-align: center; }
     #welcome-title {
       margin: 0 0 18px; font-weight: 400;
-      font-size: 28px letter-spacing: 6px; color: var(--star-white);
+      font-size: 28px; letter-spacing: 6px; color: var(--star-white);
     }
-    #welcome-inner p {margin: 0 0 12px; font-size: 15px; line-height: 1.6; color: var(--ui-text); }
+    #welcome-inner p { margin: 0 0 12px; font-size: 15px; line-height: 1.6; color: var(--ui-text); }
     #welcome-begin {
-      display: inline-clock; margin-top: 18px;
+      display: inline-flex; align-items: center; gap: 8px; margin-top: 18px;
       font-size: 15px; letter-spacing: 2px; cursor: pointer;
-      color: var(--ui-text-dim);
-      transition: color 220ms var(--ease-soft);
+      color: var(--star-gold-mid);
+      transition: color 220ms var(--ease-soft), text-shadow 220ms var(--ease-soft);
     }
-    #welcome-begin:hover { color: var(--star-gold-mid); }
+    #welcome-begin:hover {
+      color: var(--star-gold-hot);
+      text-shadow: 0 0 12px rgba(255, 138, 61, 0.55);
+    }
+    .icon-star {
+      width: 1em; height: 1em; vertical-align: -0.12em;
+      fill: currentColor; transition: filter 220ms var(--ease-soft);
+    }
+    #welcome-begin:hover .icon-star { filter: drop-shadow(0 0 6px rgba(255, 138, 61, 0.6)); }
   </style>
 </head>
 <body>
@@ -184,8 +192,8 @@
       <h1 id="welcome-title">stardump</h1>
       <p>a place to set your worries down.</p>
       <p>type a thought - it becomes a star. five make a constellation that's yours.</p>
-      <p>wehn a worry passes, let its star go supernova.</p>
-      <span id="welcome-begin">begin ✦<</span>
+      <p>when a worry passes, let its star go supernova.</p>
+      <span id="welcome-begin">begin <svg class="icon-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5Z"/></svg></span>
     </div>
   </div>
   <script>
@@ -607,7 +615,7 @@ document.getElementById('stars').addEventListener('click', e => {
   if (!star) return;
   const tip = document.createElement('div');
   tip.className = 'tooltip';
-  tip.innerHTML = `<p class="tooltip-text">${escapeHtml(star.text)}</p><button class="tooltip-resolve">mark as resolved ✦</button>`;
+  tip.innerHTML = `<p class="tooltip-text">${escapeHtml(star.text)}</p><button class="tooltip-resolve">mark as resolved <svg class="icon-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5Z"/></svg> </button>`;
   tip.querySelector('.tooltip-resolve').addEventListener('click', ev => {
     ev.stopPropagation();
     closeTooltip();

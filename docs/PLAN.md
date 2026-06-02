@@ -10,6 +10,7 @@ Goal: ship a single-file static web app (`index.html`) per the PRD — worry inp
 
 **Hard constraints (binding — repeat in every subagent brief):**
 - Single file: `index.html` with HTML, CSS, JS inline. **No npm, no build, no CDN, no frameworks, no `<script src=…>` for remote URLs, no `<link rel=stylesheet href=…>` for remote URLs.** Vanilla ES2020+.
+- **Icons exception:** inline `<svg>` icons (drawn in-file, themed via `fill: currentColor`) are **allowed** — they add no request and no package, so they don't break the zero-dependency rule. Still banned: icon fonts (Font Awesome, etc.), external SVG sprites, and any CDN/`<link>`/`<script>` icon source. Decorative icons get `aria-hidden="true"`; reuse a shared class (e.g. `.icon-star`) rather than copy-pasting paths.
 - No backend, no network calls, no analytics, no telemetry.
 - State only in `localStorage` under key `stardump-v1-sky`.
 - Desktop demo surface, click-only. Mobile must not break.
