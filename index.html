@@ -210,9 +210,9 @@ window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.cli
 
 window.addEventListener('mousedown', e => {
   if (e.button !== 0) return;
+  moved = false;
   if (e.target.closest('#input-wrap, .tooltip, .star')) return;
   isDown = true;
-  moved = false;
   downX = e.clientX;
   downY = e.clientY;
   startOx = view.ox;

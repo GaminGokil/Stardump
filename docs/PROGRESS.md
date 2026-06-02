@@ -151,3 +151,10 @@
 - Fix 1: `ctx.moveTo(gx + s.r, gy)` before each `arc` → clean disjoint circles, no connecting lines
 - Fix 2: off-viewport cull — tile is 2× the viewport so at most one copy per star is ever on-screen; `if (gx + s.r < 0 || gx - s.r > innerWidth) continue;` (and same for gy) skips the ~8/9 wasted arc fills
 - Measured @ 1920×1080: idle / pan / zoom all 60fps, 0 long frames (was ~37fps); zero console errors; stars render as discrete points with full edge-to-edge coverage
+
+## fix(sky): star clicks dead after a pan (stale moved flag)
+- Found during an S-018→S-022 audit: after any drag-pan, the first click on a star failed to open its tooltip
+- Cause (regression in S-019): a star's `mousedown` early-returns (panning never starts on a star) but it returned *before* `moved = false`, so the flag stayed stale-true from the previous pan; the `#stars` click handler's `if (moved) return;` then suppressed the tooltip until the user clicked empty space to reset
+- Fix: hoist `moved = false` above the star/input/tooltip early-return so the flag tracks the current press cycle
+- Verified @ 1920×1080: pan → click star opens tooltip; a pure pan opens no tooltip; clean clicks unaffected; zero console errors
+- Audit also reviewed (no change needed): `applyView` transform math correct; tooltip counter-scale correct; `placeStar` at zoom acceptable. Background-not-coupled-to-zoom and view-not-persisted are expected — they are the next planned steps (S-023, S-025)
