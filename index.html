@@ -484,6 +484,37 @@ function applyView() {
   if (openTooltip) openTooltip.style.transform = `translateY(-100%) scale(${1/t})`;
 }
 
+function easeK(k) { return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; }
+
+function glideTo(tx, ty, ts) {
+  const sox = view.ox, soy = view.oy, ss = view.scale, t0 = performance.now(), dur = 600;
+  (function step(now) {
+    const k = Math.min(1, (now - t0) / dur), e = easeK(k);
+    view.ox = sox + (tx - sox) * e;
+    view.oy = soy + (ty - soy) * e;
+    view.scale = ss + (ts - ss) * e;
+    applyView();
+    if (k < 1) requestAnimationFrame(step); else saveState();
+  })(performance.now());
+}
+
+function recenter() {
+  let tx = 0, ty = 0;
+  const ts = 1;
+  if (STATE.stars.length) {
+    const cx = STATE.stars.reduce((a, s) => a + s.x, 0) / STATE.stars.length;
+    const cy = STATE.stars.reduce((a, s) => a + s.y, 0) / STATE.stars.length;
+    tx = cx - (innerWidth / ts) / 2;
+    ty = cy - (innerHeight / ts) / 2;
+  }
+  glideTo(tx, ty, ts);
+}
+
+window.addEventListener('dblclick', e => {
+  if (e.target.closest('.star, #input-wrap, .tooltip')) return;
+  recenter();
+});
+
 function removeStar(id) {
   STATE.stars = STATE.stars.filter(s => s.id !== id);
   renderStars();
