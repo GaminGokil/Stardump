@@ -170,6 +170,7 @@ const smooth = { x: innerWidth / 2, y: innerHeight / 2 };
 function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
 const LAYER_P = [0.30, 0.55, 0.80];
+function bgScale() { return 1 + (view.scale - 1) * 0.5; }
 
 function genStars() {
   tileW = innerWidth * 2;
@@ -261,6 +262,9 @@ function loop() {
 
   ctx.clearRect(0, 0, innerWidth, innerHeight);
 
+  const bs = bgScale();
+  const TW = tileW * bs, TH = tileH * bs;
+
   for (const s of bgStars) {
     const alpha = clamp(s.baseAlpha * (0.7 + 0.3 * Math.sin(t * s.freq + s.phase)), 0, 1);
     ctx.globalAlpha = alpha;
@@ -268,15 +272,16 @@ function loop() {
     const p = LAYER_P[s.layer];
     const offX = view.ox * p - dx * (s.layer + 1) * 12;
     const offY = view.oy * p - dy * (s.layer + 1) * 12;
-    let bx = ((s.x - offX) % tileW + tileW) % tileW;
-    let by = ((s.y - offY) % tileH + tileH) % tileH;
+    const r = s.r * bs;
+    let bx = (((s.x - offX) * bs) % TW + TW) % TW;
+    let by = (((s.y - offY) * bs) % TH + TH) % TH;
     ctx.beginPath();
-    for (let gx = bx - tileW; gx < innerWidth + tileW; gx += tileW) {
-      if (gx + s.r < 0 || gx - s.r > innerWidth) continue;
-      for (let gy = by - tileH; gy < innerHeight + tileH; gy += tileH) {
-        if (gy + s.r < 0 || gy - s.r > innerHeight) continue;
-        ctx.moveTo(gx + s.r, gy);
-        ctx.arc(gx, gy, s.r, 0, Math.PI * 2);
+    for (let gx = bx - TW; gx < innerWidth + TW; gx += TW) {
+      if (gx + r < 0 || gx - r > innerWidth) continue;
+      for (let gy = by - TH; gy < innerHeight + TH; gy += TH) {
+        if (gy + r < 0 || gy - r > innerHeight) continue;
+        ctx.moveTo(gx + r, gy);
+        ctx.arc(gx, gy, r, 0, Math.PI * 2);
       }
     }
     ctx.fill();
