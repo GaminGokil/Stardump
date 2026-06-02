@@ -178,3 +178,12 @@
 - Sanitized: `ox/oy` via `+x || 0`, `scale` via `clamp(+scale || 1, 0.4, 3)` (matches wheel-zoom clamp)
 - Init order `loadState() → renderStars() → applyView()` already applies the restored camera
 - Verified @ 1920×1080 (V4): set ox/oy/scale → reload restores camera + stars exactly (incl. `#stars` transform); legacy save (no view) → identity, stars intact; corrupt view (ox NaN, scale 99) → sanitized to 0/0 and clamp 3; zero console errors
+
+## S-026 — polish(sky): zoom/pan polish + cross-browser (audit, no code change)
+- Audit step — all five checks passed with the code already consistent; no `index.html` change needed
+- Easing: zero `linear` in the file; all CSS `transition:` rules (lines 48/74/91/133) use `var(--ease-soft)`; animations use `--ease-pop/soft/fade`; glide uses `easeK` (cubic). Twinkle "linear" exception is the `Math.sin` alpha calc in `loop()`, not the literal keyword
+- Cursor: `body{cursor:grab}` idle / `body.panning{cursor:grabbing}`; class added in `mousemove`, removed **unconditionally** in `mouseup` (before the `if(moved)` save) → cannot stick after release
+- Clamp consistency: `wheel` and `loadState` both `clamp(…, 0.4, 3)`; recenter `ts = 1` sits inside that range — identical bounds everywhere scale is set
+- Performance @ 1920×1080: combined pan+zoom 60.6fps, 0 long frames. Tooltip readability: counter-scale holds the tooltip at an identical 180×74px / 13px font at scale 1, 0.4 and 3
+- Cross-size smoke: 1920×1080 and 1440×900 both clean — canvas matches viewport, full pan→zoom→tooltip→recenter chain works, layout correct, zero console errors. Safari not testable on Windows (deferred per "Safari if available")
+- Note for follow-up (not S-026): repo has accumulated test-artifact PNGs + `.playwright-mcp/` / `.worktrees/` untracked, and `/docs` in `.gitignore` forces `git add -f` for this log — candidates for a `.gitignore` cleanup
