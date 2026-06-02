@@ -136,3 +136,11 @@
 - Min-distance constraint (90 units) unchanged; applies in world space as before
 - Fallback return also uses viewport rectangle, ensuring consistent placement
 - New thoughts now land on-screen when added, even after panning/zooming away
+
+## S-022 — feat(sky): scroll-to-zoom foreground
+- `wheel` listener (`passive:false`) captures world-space anchor before scaling: `wx = s2wx(e.clientX)`
+- Scale: `view.scale = clamp(view.scale * Math.exp(-e.deltaY * 0.0015), 0.4, 3)` — exponential, clamped
+- Re-anchor: `view.ox = wx - e.clientX/view.scale` keeps the cursor point fixed in world space
+- `applyView()` called immediately; debounced `saveState` fires 400ms after last wheel event
+- Tooltip counter-scaled at creation: `transformOrigin: left bottom`, `scale(1/view.scale)` keeps text readable
+- Clamp confirmed: min 0.4, max 3.0; zero console errors
