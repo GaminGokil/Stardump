@@ -272,7 +272,10 @@ function loop() {
     let by = ((s.y - offY) % tileH + tileH) % tileH;
     ctx.beginPath();
     for (let gx = bx - tileW; gx < innerWidth + tileW; gx += tileW) {
+      if (gx + s.r < 0 || gx - s.r > innerWidth) continue;
       for (let gy = by - tileH; gy < innerHeight + tileH; gy += tileH) {
+        if (gy + s.r < 0 || gy - s.r > innerHeight) continue;
+        ctx.moveTo(gx + s.r, gy);
         ctx.arc(gx, gy, s.r, 0, Math.PI * 2);
       }
     }

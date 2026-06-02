@@ -144,3 +144,10 @@
 - `applyView()` called immediately; debounced `saveState` fires 400ms after last wheel event
 - Tooltip counter-scaled at creation: `transformOrigin: left bottom`, `scale(1/view.scale)` keeps text readable
 - Clamp confirmed: min 0.4, max 3.0; zero console errors
+
+## fix(sky): bg stars render as triangles + lag (moveTo + cull)
+- Root cause (regression from S-020 tiling loop): multiple `ctx.arc()` in one `beginPath()` with no `ctx.moveTo()` between them — Canvas joins consecutive arcs with a straight line, wiring every circle to the next → "triangles"/spokes
+- Each star's `fill()` filled one large self-intersecting polygon spanning the whole 2× tile; ×900 stars/frame caused the lag (idle had dropped to ~37fps)
+- Fix 1: `ctx.moveTo(gx + s.r, gy)` before each `arc` → clean disjoint circles, no connecting lines
+- Fix 2: off-viewport cull — tile is 2× the viewport so at most one copy per star is ever on-screen; `if (gx + s.r < 0 || gx - s.r > innerWidth) continue;` (and same for gy) skips the ~8/9 wasted arc fills
+- Measured @ 1920×1080: idle / pan / zoom all 60fps, 0 long frames (was ~37fps); zero console errors; stars render as discrete points with full edge-to-edge coverage
