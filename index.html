@@ -142,6 +142,8 @@
       font-size: 13px; letter-spacing: 1px; text-transform: uppercase;
       color: var(--ui-text-dim); pointer-events: none;
     }
+    body { cursor: grab; }
+    body.panning { cursor: grabbing; }
   </style>
 </head>
 <body>
@@ -201,6 +203,37 @@ resize();
 window.addEventListener('resize', resize);
 window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
 
+window.addEventListener('mousedown', e => {
+  if (e.button !== 0) return;
+  if (e.target.closest('#input-wrap, .tooltip, .star')) return;
+  isDown = true;
+  moved = false;
+  downX = e.clientX;
+  downY = e.clientY;
+  startOx = view.ox;
+  startOy = view.oy;
+});
+
+window.addEventListener('mousemove', e => {
+  if (!isDown) return;
+  const ddx = e.clientX - downX, ddy = e.clientY - downY;
+  if (!moved && Math.hypot(ddx, ddy) > 4) {
+    moved = true;
+    document.body.classList.add('panning');
+  }
+  if (moved) {
+    view.ox = startOx - ddx / view.scale;
+    view.oy = startOy - ddy / view.scale;
+    applyView();
+  }
+});
+
+window.addEventListener('mouseup', () => {
+  isDown = false;
+  document.body.classList.remove('panning');
+  if (moved) saveState();
+});
+
 function loop() {
   requestAnimationFrame(loop);
   const t = performance.now() / 1000;
@@ -228,6 +261,8 @@ loop();
 const STATE = { stars: [], nextId: 0 };
 
 const view = { ox: 0, oy: 0, scale: 1 };
+
+let isDown = false, moved = false, downX = 0, downY = 0, startOx = 0, startOy = 0;
 
 const LS_KEY = 'stardump-v1-sky';
 
@@ -439,6 +474,7 @@ document.addEventListener('click', e => {
 });
 
 document.getElementById('stars').addEventListener('click', e => {
+  if (moved) return;
   const starEl = e.target.closest('.star');
   if (!starEl) return;
   e.stopPropagation();

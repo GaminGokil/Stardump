@@ -93,3 +93,28 @@
 - Chrome 1440×900: identical result, layout scales correctly, no overflow
 - Bug found and fixed: counter template used `the ${name}` but constellation names already include "The" prefix → changed to `${name}` to eliminate double-the
 - No Safari-specific fixes needed for Chrome smoke pass; mix-blend-mode renders correctly in Chrome
+
+## S-016 — polish(sky): stronger cursor parallax + larger bg stars
+- Parallax factor increased from 0.2 to 0.4 (doubled depth effect)
+- Background star size scaled by layer+1 (was fixed): `ctx.arc(..., s.r * (s.layer + 1), ...)`  instead of `ctx.arc(..., s.r, ...)`
+- Visual depth more pronounced; far stars no longer feel flat
+
+## S-017 — fix(constellation): reset title below 5 stars  
+- Constellation name visibility tied to star count
+- If `STATE.stars.length < 5`, `#constellation-name` opacity→0, render early-return
+- Prevents orphan title text when few stars exist
+
+## S-018 — feat(sky): camera scaffold at identity
+- Added `const view = { ox: 0, oy: 0, scale: 1 };` — camera state
+- Helpers `s2wx(sx)` / `s2wy(sy)` convert screen→world coords
+- `applyView()` applies scale+translate to `#stars`, `#cgroup`, and open tooltip
+- SVG constellation moved into `<g id="cgroup">` for grouped transform
+- Identity transform on load: sky pixel-identical, zero drift
+
+## S-019 — feat(sky): drag-to-pan foreground
+- `mousedown` listener: left-button-only, skips input/tooltip/star targets, captures offset
+- `mousemove` listener: 4px hysteresis before `moved=true`, applies pan to `view.ox/oy`
+- `mouseup` listener: clears `moved` flag, saves state
+- Cursor: `grab` idle → `grabbing` while panning
+- Click handler guard: `if(moved) return;` suppresses tooltip after drag
+- Foreground (stars+constellation) pans smoothly; background (S-020) pending
