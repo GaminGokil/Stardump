@@ -163,13 +163,18 @@ const canvas = document.getElementById('sky');
 const ctx = canvas.getContext('2d');
 
 let bgStars = [];
+let tileW = 0, tileH = 0;
 const mouse = { x: innerWidth / 2, y: innerHeight / 2 };
 const smooth = { x: innerWidth / 2, y: innerHeight / 2 };
 
 function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
+const LAYER_P = [0.30, 0.55, 0.80];
+
 function genStars() {
-  const count = clamp(Math.floor((innerWidth * innerHeight) / 2800), 100, 300);
+  tileW = innerWidth * 2;
+  tileH = innerHeight * 2;
+  const count = clamp(Math.floor((tileW * tileH) / 2800), 200, 900);
   bgStars = [];
   for (let i = 0; i < count; i++) {
     const rnd = Math.random();
@@ -177,8 +182,8 @@ function genStars() {
     const lrnd = Math.random();
     const layer = lrnd < 0.5 ? 0 : lrnd < 0.8 ? 1 : 2;
     bgStars.push({
-      x: Math.random() * innerWidth,
-      y: Math.random() * innerHeight,
+      x: Math.random() * tileW,
+      y: Math.random() * tileH,
       r: 0.4 + Math.random() * 1.3,
       layer,
       hue,
@@ -249,18 +254,27 @@ function loop() {
     const alpha = clamp(s.baseAlpha * (0.7 + 0.3 * Math.sin(t * s.freq + s.phase)), 0, 1);
     ctx.globalAlpha = alpha;
     ctx.fillStyle = s.hue;
+    const p = LAYER_P[s.layer];
+    const offX = view.ox * p - dx * (s.layer + 1) * 12;
+    const offY = view.oy * p - dy * (s.layer + 1) * 12;
+    let bx = ((s.x - offX) % tileW + tileW) % tileW;
+    let by = ((s.y - offY) % tileH + tileH) % tileH;
     ctx.beginPath();
-    ctx.arc(s.x - dx * (s.layer + 1) * 12, s.y - dy * (s.layer + 1) * 12, s.r, 0, Math.PI * 2);
+    for (let gx = bx - tileW; gx < innerWidth + tileW; gx += tileW) {
+      for (let gy = by - tileH; gy < innerHeight + tileH; gy += tileH) {
+        ctx.arc(gx, gy, s.r, 0, Math.PI * 2);
+      }
+    }
     ctx.fill();
   }
   ctx.globalAlpha = 1;
 }
 
-loop();
-
 const STATE = { stars: [], nextId: 0 };
 
 const view = { ox: 0, oy: 0, scale: 1 };
+
+loop();
 
 let isDown = false, moved = false, downX = 0, downY = 0, startOx = 0, startOy = 0;
 
