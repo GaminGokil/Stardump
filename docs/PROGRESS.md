@@ -205,3 +205,10 @@
 - Side fix: reverted a re-introduced welcome-copy typo found unsaved in the editor buffer ("wehn" -> "when", originally fixed in S-028) so the commit ships clean copy
 - Authored by hand-typing into Cursor via windows-mcp (Cursor-focus verified before each action per docs/WINDOWS_MCP.md); the one-word typo revert was a direct edit for precision
 - Verified @ 1920x1080 (chrome-devtools, served via http://localhost:8765): welcome shows -> Escape removes `.show`, sets seenWelcome, removes overlay after fade; star tooltip open -> Escape closes it (openTooltip null, no `.tooltip` in DOM); 'a' key leaves tooltip intact; zero console messages on load and after all interactions. Verify: V1,V2,V5
+
+## S-030 - feat(onboarding): show welcome on every load
+- Behavior change per request: the welcome overlay now appears on **every** page load/refresh, not just first-run
+- Removed the entire `seenWelcome` flag (its only purpose was first-run suppression): dropped from `STATE`, from the `saveState` payload, and from `loadState` restore; `dismissWelcome` no longer writes `seenWelcome`/calls `saveState`
+- Removed the show-gate `if (STATE.seenWelcome || STATE.stars.length > 0) return;` so the overlay shows even when a populated sky is restored; renamed `maybeShowWelcome` -> `showWelcome` (no longer conditional)
+- Migration: legacy saves carrying `seenWelcome` are simply ignored on load; the next real `saveState` rewrites the object without the key (confirmed: post-save keys = stars/nextId/view)
+- Verified @ 1920x1080 (chrome-devtools, served via http://localhost:8765): seeded a save with 1 star + legacy `seenWelcome:true` -> reload shows the overlay (`.show` true) over the restored star; dismiss removes it after fade; add a thought (real save) -> persisted keys drop `seenWelcome`; reload again -> overlay returns with both stars intact; zero console messages throughout. Verify: V1,V2,V5
