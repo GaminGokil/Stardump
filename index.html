@@ -149,6 +149,7 @@
       display: flex; align-items: center; justify-content: center;
       background: rgba(2, 3, 10, 0.62);
       opacity: 0; pointer-events: none;
+      user-select: none; -webkit-user-select:none;
       transition: opacity 600ms var(--ease-soft);
     }
     #welcome.show { opacity: 1; pointer-events: auto; }
@@ -193,7 +194,7 @@
       <p>a place to set your worries down.</p>
       <p>type a thought - it becomes a star. five make a constellation that's yours.</p>
       <p>when a worry passes, let its star go supernova.</p>
-      <span id="welcome-begin">begin <svg class="icon-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5Z"/></svg></span>
+      <span id="welcome-begin">begin <svg class="icon-star" viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5Z"/></svg></span>
     </div>
   </div>
   <script>
@@ -327,7 +328,7 @@ function loop() {
   ctx.globalAlpha = 1;
 }
 
-const STATE = { stars: [], nextId: 0 };
+const STATE = { stars: [], nextId: 0, seenWelcome: false };
 
 const view = { ox: 0, oy: 0, scale: 1 };
 
@@ -341,7 +342,7 @@ const LS_KEY = 'stardump-v1-sky';
 const animatedIds = new Set();
 
 function saveState() {
-  try { localStorage.setItem(LS_KEY, JSON.stringify({ stars: STATE.stars, nextId: STATE.nextId, view: { ox: view.ox, oy: view.oy, scale: view.scale } })); } catch (_) {}
+  try { localStorage.setItem(LS_KEY, JSON.stringify({ stars: STATE.stars, nextId: STATE.nextId, seenWelcome: STATE.seenWelcome, view: { ox: view.ox, oy: view.oy, scale: view.scale } })); } catch (_) {}
 }
 
 function loadState() {
@@ -351,6 +352,7 @@ function loadState() {
     const data = JSON.parse(raw);
     if (Array.isArray(data.stars)) STATE.stars = data.stars;
     if (typeof data.nextId === 'number') STATE.nextId = data.nextId;
+    STATE.seenWelcome = !!data.seenWelcome;
     if (data.view) {
       view.ox = +data.view.ox || 0;
       view.oy = +data.view.oy || 0;
@@ -519,12 +521,15 @@ function dismissWelcome() {
   const w = document.getElementById('welcome');
   if (!w) return;
   w.classList.remove('show');
+  STATE.seenWelcome = true;
+  saveState();
   setTimeout(() => w.remove(), 600);
 }
 
-function showWelcome() {
+function maybeShowWelcome() {
   const w = document.getElementById('welcome');
   if (!w) return;
+  if (STATE.seenWelcome || STATE.stars.length > 0) { w.remove(); return; }
   document.getElementById('welcome-begin').addEventListener('click', dismissWelcome);
   setTimeout(() => w.classList.add('show'), 350);
 }
@@ -626,9 +631,10 @@ document.getElementById('stars').addEventListener('click', e => {
 loadState();
 renderStars();
 applyView();
-showWelcome();
+maybeShowWelcome();
 
 window.addEventListener('keydown', e => { if (e.key !== 'Escape') return; if (openTooltip) { closeTooltip(); return; } const w = document.getElementById('welcome'); if (w && w.classList.contains('show')) dismissWelcome(); });
+
   </script>
 </body>
 </html>
