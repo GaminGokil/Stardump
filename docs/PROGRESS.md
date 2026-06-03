@@ -197,3 +197,11 @@
 - welcome-begin restyled: idle gold-mid -> hover gold-hot with text-shadow + icon drop-shadow glow (eased)
 - Copy fix (same overlay): "wehn a worry passes" -> "when a worry passes"
 - Verified @ 1920x1080: welcome renders gold "begin" + crisp SVG star (display inline-flex confirmed, icon fill resolves to gold via currentColor at 1em); clicking a star opens the tooltip with the SVG resolve icon; no unicode star glyph anywhere in the DOM; zero console messages on load and after both interactions; saved sky/state restored exactly after the first-run test. Verify: V1,V2,V5
+
+## S-029 - feat(input): Escape closes tooltip / dismisses welcome
+- New `window` `keydown` listener: on `Escape`, if a tooltip is open -> `closeTooltip()` and return; else if the welcome overlay is showing (`#welcome.show`) -> `dismissWelcome()`
+- Placed as the last statement in the script (after `maybeShowWelcome()`); reuses existing `openTooltip` / `closeTooltip` / `dismissWelcome`, zero new deps, no out-of-scope feature
+- Tooltip takes priority over welcome; non-Escape keys ignored (no false triggers)
+- Side fix: reverted a re-introduced welcome-copy typo found unsaved in the editor buffer ("wehn" -> "when", originally fixed in S-028) so the commit ships clean copy
+- Authored by hand-typing into Cursor via windows-mcp (Cursor-focus verified before each action per docs/WINDOWS_MCP.md); the one-word typo revert was a direct edit for precision
+- Verified @ 1920x1080 (chrome-devtools, served via http://localhost:8765): welcome shows -> Escape removes `.show`, sets seenWelcome, removes overlay after fade; star tooltip open -> Escape closes it (openTooltip null, no `.tooltip` in DOM); 'a' key leaves tooltip intact; zero console messages on load and after all interactions. Verify: V1,V2,V5

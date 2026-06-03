@@ -631,6 +631,8 @@ loadState();
 renderStars();
 applyView();
 maybeShowWelcome();
+
+window.addEventListener('keydown', e => { if (e.key !== 'Escape') return; if (openTooltip) { closeTooltip(); return; } const w = document.getElementById('welcome'); if (w && w.classList.contains('show')) dismissWelcome(); });
   </script>
 </body>
 </html>
