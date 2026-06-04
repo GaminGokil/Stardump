@@ -37,19 +37,6 @@
     }
     *, *::before, *::after { box-sizing: border-box; }
     body { margin: 0; background: var(--bg-base); color: var(--star-white); overflow: hidden; font-family: system-ui, sans-serif; }
-    #nebula {
-      position: fixed; inset: 0; z-index: 1;
-      pointer-events: none;
-    }
-    #nebula::before, #nebula::after {
-      content: ''; position: fixed; inset: 0;
-    }
-    #nebula::before {
-      background: radial-gradient(closest-side at 22% 28%, rgba(150,80,200,0.22), transparent 70%);
-    }
-    #nebula::after {
-      background: radial-gradient(closest-side at 78% 78%, rgba(60,110,220,0.18), transparent 72%);
-    }
     #input-wrap {
       position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); z-index: 10;
     }
@@ -258,7 +245,6 @@
   <div id="brand">stardump</div>
   <div id="counter"></div>
   <canvas id="sky" style="position:fixed;inset:0;z-index:1;"></canvas>
-  <div id="nebula"></div>
   <div id="stars"></div>
   <svg id="constellation" xmlns="http://www.w3.org/2000/svg"></svg>
   <div id="constellation-name"></div>
