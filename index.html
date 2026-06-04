@@ -4,6 +4,21 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Stardump</title>
+  <link id="dynamic-favicon" rel="icon" type="image/jpeg" href="galaxy-icons/1.jpg">
+  <script>
+    (function() {
+      var numImages = 17;
+      var randomIcon = Math.floor(Math.random() * numImages) + 1;
+
+      var randomImage = `galaxy-icons/${randomIcon}.jpg`;
+
+      var faviconElement = document.getElementById('dynamic-favicon');
+
+      if (faviconElement){
+        faviconElement.href = randomImage;
+      }
+    })();
+  </script>
   <style>
     :root {
       --bg-base: #02030a;
@@ -186,7 +201,7 @@
   <div id="constellation-name"></div>
   <div id="input-wrap">
     <input id="thought" type="text" maxlength="120" autocomplete="off"
-           placeholder="drop a thought into the sky...">
+           placeholder="release your thoughts into the void of space...">
   </div>
   <div id="welcome">
     <div id="welcome-inner">
