@@ -229,6 +229,7 @@ const LAYER_P = [0.30, 0.55, 0.80];
 function bgScale() { return 1 + (view.scale - 1) * 0.5; }
 
 function genStars() {
+  const t0 = performance.now() / 1000;
   tileW = innerWidth * 2;
   tileH = innerHeight * 2;
   const count = clamp(Math.floor((tileW * tileH) / 2800), 200, 900);
@@ -247,6 +248,11 @@ function genStars() {
       baseAlpha: 0.35 + Math.random() * 0.60,
       phase: Math.random() * Math.PI * 2,
       freq: 0.4 + Math.random() * 0.8,
+      
+      
+      twinkleNext: t0 + 4 + Math.random() * 40,
+      twinkleDur: 0.7 + Math.random() * 0.8,
+      twinkleStart: -1e9,
     });
   }
 }
@@ -322,16 +328,25 @@ function loop() {
   const TW = tileW * bs, TH = tileH * bs;
 
   for (const s of bgStars) {
-    const alpha = clamp(s.baseAlpha * (0.7 + 0.3 * Math.sin(t * s.freq + s.phase)), 0, 1);
+    if (t >= s.twinkleNext) {
+      s.twinkleStart = t;
+      s.twinkleNext = t + 18 + Math.random() * 42;
+    }
+    let tw = 0;
+    const k = (t - s.twinkleStart) / s.twinkleDur;
+    if (k >= 0 && k <= 1) tw = Math.sin(k * Math.PI);
+    const alpha = clamp(s.baseAlpha * (0.7 + 0.3 * Math.sin(t * s.freq + s.phase)) + tw * 0.55, 0, 1);
     ctx.globalAlpha = alpha;
     ctx.fillStyle = s.hue;
     const p = LAYER_P[s.layer];
-    const offX = view.ox * p - dx * (s.layer + 1) * 12;
-    const offY = view.oy * p - dy * (s.layer + 1) * 12;
-    const r = s.r * bs;
-    let bx = (((s.x - offX) * bs) % TW + TW) % TW;
-    let by = (((s.y - offY) * bs) % TH + TH) % TH;
+    const offX = view.ox * p - dx * (s.layer +1) *12;
+    const offY = view.oy * p - dy * (s.layer +1) *12;
+    const r = s.r * bs * (1 + tw * 0.7);
+
+    let bx = (((s.x - offX) * bs % TW + TW) % TW);
+    let by = (((s.y - offY) * bs % TW + TW) % TW);
     ctx.beginPath();
+
     for (let gx = bx - TW; gx < innerWidth + TW; gx += TW) {
       if (gx + r < 0 || gx - r > innerWidth) continue;
       for (let gy = by - TH; gy < innerHeight + TH; gy += TH) {
