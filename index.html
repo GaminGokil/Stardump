@@ -45,7 +45,7 @@
       background: transparent; color: var(--star-white);
       font-size: 16px; font-family: system-ui, sans-serif;
       padding: 12px 18px;
-      border: 1px solid rgba(255,245,232,0.14); border-radius: 999px;
+      border: 1px solid rgba(255,245,232,0.14); border-radius: 10px;
       outline: none;
       transition: border 220ms var(--ease-soft);
     }
@@ -131,20 +131,20 @@
     #constellation-name {
       position: fixed; top: 32px; left: 50%; transform: translateX(-50%);
       font-family: Georgia, serif; font-style: italic; font-size: 26px;
-      letter-spacing: 3px; color: rgba(255,245,232,0.55);
+      letter-spacing: 2px; color: rgba(255,245,232,0.55);
       pointer-events: none; z-index: 10;
       opacity: 0;
       transition: opacity 600ms var(--ease-soft);
     }
     #brand {
       position: fixed; top: 24px; left: 28px; z-index: 10;
-      font-size: 14px; letter-spacing: 2px; text-transform: uppercase;
-      color: var(--ui-text-dim); pointer-events: none;
+      font-size: 14px; letter-spacing: 2px;
+      color: color(srgb 255 255 255); pointer-events: none;
     }
     #counter {
       position: fixed; top: 24px; right: 28px; z-index: 10;
-      font-size: 13px; letter-spacing: 1px; text-transform: uppercase;
-      color: var(--ui-text-dim); pointer-events: none;
+      font-size: 13px; letter-spacing: 1px;
+      color: color(srgb 255 255 255); pointer-events: none;
     }
     body { cursor: grab; }
     body.panning { cursor: grabbing; }
@@ -160,7 +160,7 @@
     #welcome-inner { max-width: 440px; padding: 0 24px; text-align: center; }
     #welcome-title {
       margin: 0 0 18px; font-weight: 400;
-      font-size: 28px; letter-spacing: 6px; color: var(--star-white);
+      font-size: 28px; letter-spacing: 3px; color: var(--star-white);
     }
     #welcome-inner p { margin: 0 0 12px; font-size: 15px; line-height: 1.6; color: var(--ui-text); }
     #welcome-begin {
@@ -197,16 +197,15 @@
     #collapse-btn {
       position: fixed; left: 50%; bottom: 86px; transform: translateX(-50%);
       z-index: 50; cursor: pointer; user-select: none;
-      font-family: system-ui, sans-serif; font-size: 14px; letter-spacing: 3px;
-      text-transform: uppercase; color: var(--star-white);
-      padding: 12px 26px; border: 1px solid rgba(255,200,128,0.7); border-radius: 999px;
-      background: radial-gradient(circle at 50% 30%, rgba(255,138,61,0.55), rgba(255,138,61,0.15));
-      animation: collapse-pulse 2.4s var(--ease-soft) infinite;
+      font-family: system-ui, sans-serif; font-size: 14px; letter-spacing: 2px;
+      color: rgba(255, 255, 255, 0.404);
+      padding: 6px 13px; border: 1px solid rgba(90, 90, 90, 0.411); border-radius: 10px;
+      background: radial-gradient( circle at 50% 30%,  rgba(0, 0, 0, 0.55), rgba(151, 151, 151, 0.15)); 
       transition: transform 160ms var(--ease-pop), box-shadow 220ms var(--ease-soft);
     }
     #collapse-btn:hover {
-      transform: translateX(-50%) scale(1.06);
-      box-shadow: 0 0 26px rgba(255,138,61,0.85), 0 0 70px rgba(255,138,61,0.5), inset 0 0 18px rgba(255,200,128,0.6);
+      transform: translateX(-50%) scale(1.02);
+      
     }
     #collapse-btn:active { transform: translateX(-50%) scale(0.97); }
     body:has(#welcome.show) #collapse-btn {
@@ -254,7 +253,7 @@
   </div>
   <canvas id="blast"></canvas>
   <div id="flash"></div>
-  <button id="collapse-btn">KABOOM!!!</button>
+  <button id="collapse-btn">explode all of your thoughts</button>
   <div id="welcome">
     <div id="welcome-inner">
       <h2 id="welcome-title">Stardump</h2>
@@ -603,7 +602,7 @@ function updateCounter() {
   const n = STATE.stars.length;
   if (n === 0) { el.textContent = ''; return; }
   const name = constellationName(STATE.stars);
-  el.textContent = name ? `${n} stars · ${name}` : `${n} stars`;
+  el.textContent = name ? `${n} stars` : `${n} stars`;
 }
 
 document.getElementById('thought').addEventListener('keydown', e => {
@@ -633,7 +632,7 @@ function dismissWelcome() {
 function maybeShowWelcome() {
   const w = document.getElementById('welcome');
   if (!w) return;
-  if (STATE.seenWelcome || STATE.stars.length > 0) { w.remove(); return; }
+  
   document.getElementById('welcome-begin').addEventListener('click', dismissWelcome);
   setTimeout(() => w.classList.add('show'), 350);
 }
@@ -720,7 +719,7 @@ document.getElementById('stars').addEventListener('click', e => {
   if (!star) return;
   const tip = document.createElement('div');
   tip.className = 'tooltip';
-  tip.innerHTML = `<p class="tooltip-text">${escapeHtml(star.text)}</p><button class="tooltip-resolve">mark as resolved <svg class="icon-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5Z"/></svg> </button>`;
+  tip.innerHTML = `<p class="tooltip-text">${escapeHtml(star.text)}</p><button class="tooltip-resolve">mark as resolved </button>`;
   tip.querySelector('.tooltip-resolve').addEventListener('click', ev => {
     ev.stopPropagation();
     closeTooltip();
