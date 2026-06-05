@@ -214,6 +214,21 @@
       border-color: rgba(90, 90, 90, 0.411);
       animation: collapse-pulse 0.6s var(--ease-soft) infinite;
     }
+    #welcome-btn {
+      position: fixed; right: 28px; bottom: 28px;
+      z-index: 50; cursor: pointer; user-select: none;
+      font-family: system-ui, sans-serif; font-size: 14px; letter-spacing: 1px;
+      color: rgba(255,255,255,0.4);
+      padding: 6px 13px; border: 1px solid rgba(90,90,90,0.411); border-radius: 10px;
+      background: radial-gradient( circle at 50% 30%, rgba(0,0,0,0.55), rgba(151,151,151,0.15));
+      transition: transform 650ms var(--ease-pop), box-shadow 220ms var(--ease-soft);
+
+    }
+    #welcome-btn:hover { transform: scale(1.02); }
+    #welcome-btn:active { transform: scale(0.97); }
+    body:has(#welcome.show) #welcome-btn {
+      opacity: 0.3; pointer-events: none;
+    }
     body:has(#welcome.show) #collapse-btn {
       opacity: 0.3; pointer-events: none; box-shadow: none; animation: none;
     }
@@ -260,6 +275,7 @@
   <canvas id="blast"></canvas>
   <div id="flash"></div>
   <button id="collapse-btn">explode all of your thoughts</button>
+  <button id="welcome-btn" title="about">?</button>
   <div id="welcome">
     <div id="welcome-inner">
       <h2 id="welcome-title">Stardump</h2>
@@ -632,7 +648,11 @@ function dismissWelcome() {
   if (!w) return;
   w.classList.remove('show');
   saveState();
-  setTimeout(() => w.remove(), 600);
+}
+
+function showWelcome() {
+  const w = document.getElementById('welcome');
+  if (w) w.classList.add('show');
 }
 
 function maybeShowWelcome() {
@@ -989,6 +1009,8 @@ collapseBtn.addEventListener('pointercancel', releaseCharge);
 collapseBtn.addEventListener('keydown', e => { if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) { e.preventDefault(); startCharge(); } });
 collapseBtn.addEventListener('keyup', e => { if (e.key === ' ' || e.key === 'Enter') releaseCharge(); });
 
+const welcomeBtn = document.getElementById('welcome-btn');
+if (welcomeBtn) welcomeBtn.addEventListener('click', showWelcome);
 
   </script>
 </body>
